@@ -1,7 +1,6 @@
-use std::collections::HashSet;
-use std::hash::{Hash, Hasher};
+use std::collections::HashMap;
 
-use serde::{Deserialize, Serialize};
+pub type EntryId = u32;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Login {
@@ -26,59 +25,39 @@ pub struct User {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Subject {
-    name: String,
-    field: Field,
-    topics: HashSet<Topic>,
+    pub name: String,
+    pub id: EntryId,
+    pub field: Field,
+    pub topics: HashMap<u32, Topic>,
 }
 
 impl Subject {
-    pub fn init(name: String, field: Field) -> Self {
-        Self{name, field, topics: std::collections::HashSet::with_capacity(3)}
-    }
-    pub fn take_topic(&mut self, topic: Topic) -> bool {
-        self.topics.insert(topic)
+    pub fn init(id: EntryId, name: String, field: Field) -> Self {
+        Self{id, name, field, topics: std::collections::HashMap::with_capacity(3)}
     }
 }
-
-impl PartialEq for Subject {
-    fn eq(&self, other: &Self) -> bool {
-        self.name.eq(&other.name)
-    }
-}
-impl Eq for Subject {}
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Topic {
+    id: EntryId,
     name: String,
-    learning_objectives: HashSet<String>,
-    pre_req_to: HashSet<Topic>,
-    supported_by: HashSet<Topic>
+    learning_objectives: HashMap<u32, String>,
+    pre_req_to: HashMap<u32, Topic>,
+    supported_by: HashMap<u32, Topic>
 }
 
 impl Topic {
-    pub fn init(name: String) -> Self {
+    pub fn init(id: EntryId, name: String) -> Self {
         Self {
+            id,
             name,
-            learning_objectives: HashSet::new(),
-            pre_req_to: HashSet::new(),
-            supported_by: HashSet::new(),
+            learning_objectives: HashMap::new(),
+            pre_req_to: HashMap::new(),
+            supported_by: HashMap::new(),
         }
     }
 }
 
-impl PartialEq for Topic {
-    fn eq(&self, other: &Self) -> bool {
-        self.name.eq(&other.name)
-    }
-}
-impl Eq for Topic {}
-impl Hash for Topic {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.name.hash(state);
-    }
-}
-
-#[derive(Debug, Hash, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Field {
     ComputerScience
 }
