@@ -1,6 +1,8 @@
+use std::rc::Rc;
 use std::collections::{HashMap, HashSet};
+use serde::{Serialize, Deserialize};
 
-pub type EntryId = u32;
+pub type EntryId = i32;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Login {
@@ -39,14 +41,14 @@ impl Subject {
     }
 }
 pub type TopicId = EntryId;
-pub type TopicCollection = HashMap<EntryId, Topic>;
+pub type TopicCollection = HashMap<EntryId, Rc<Topic>>;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Topic {
-    id: TopicId,
-    name: String,
-    learning_objectives: LearningObjCollection,
-    pre_req_to: HashSet<TopicId>,
-    supported_by: HashSet<TopicId>,
+    pub id: TopicId,
+    pub name: String,
+    pub learning_objectives: LearningObjCollection,
+    pub pre_req_to: HashSet<TopicId>,
+    pub supported_by: HashSet<TopicId>,
 }
 
 impl Topic {
@@ -61,7 +63,7 @@ impl Topic {
     }
 }
 
-pub type LearningObjCollection = HashMap<EntryId, Topic>;
+pub type LearningObjCollection = HashMap<EntryId, Rc<LearningObj>>;
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Field {
     ComputerScience
@@ -70,9 +72,11 @@ pub enum Field {
 pub type LearningObjId = EntryId;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LearningObj {
-    id: LearningObjId,
-    name: String,
-    instructions: String
+    pub id: LearningObjId,
+    pub name: String,
+    pub instructions: String,
+    pub hints: Vec<String>,
+
 }
 
 impl LearningObj {
@@ -80,7 +84,8 @@ impl LearningObj {
         Self {
             id,
             name,
-            instructions
+            instructions,
+            hints: vec![],
         }
     }
 }
