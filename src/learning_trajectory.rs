@@ -1,11 +1,23 @@
 /// Captures the pathway through a curriculum. A university intro to CS
 /// course might have Sequence, Repetition, and Conditionals as LT's.
-pub struct LearningTrajectory {
+pub struct LearningTrajectory<'a> {
 
     title: String,
     description: String,
-    stopping_points: Vec<ConsensusGoal>,
+    consensus_goals: Vec<ConsensusGoal>,
+    learning_goals: Vec<LearningGoal>,
+    edges: Vec<Edge<'a>>,
 }
+
+pub struct Edge<'a> {
+    left: &'a dyn Node,
+    right: &'a dyn Node,
+    weight: f32,
+}
+
+pub trait Node {}
+
+impl Node for ConsensusGoal {}
 pub struct ConsensusGoal {
     delivery: Delivery,
     comments: String,
@@ -13,6 +25,9 @@ pub struct ConsensusGoal {
     LearningGoals: Vec<LearningGoal>,
 }
 
+
+
+impl Node for LearningGoal {}
 /// "Any explicit statement or implicitendorsement of what students can or
 /// should be able to do in relation tocomputational thinking" K. M. Rich
 /// The author of this paper began with collecting a set of these.
@@ -22,10 +37,10 @@ pub struct LearningGoal {
     student_support: f32,
     /// Extent to which this goal is justified through academic theory.
     academic_support: f32,
-    concept_tag: Concept,
+    concept: ConceptCluster,
 }
 
-pub enum Concept {
+pub enum ConceptCluster {
     ConditionalLogic,
     FlowControl,
     IterRecParThinking,

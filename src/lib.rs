@@ -2,6 +2,8 @@ use std::rc::Rc;
 use std::collections::{HashMap, HashSet};
 use serde::{Serialize, Deserialize};
 
+pub mod learning_trajectory;
+
 pub type EntryId = i32;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
