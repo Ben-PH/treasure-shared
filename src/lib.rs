@@ -1,6 +1,6 @@
-use std::rc::Rc;
+use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
-use serde::{Serialize, Deserialize};
+use std::rc::Rc;
 
 pub mod learning_trajectory;
 
@@ -39,7 +39,12 @@ pub struct Subject {
 
 impl Subject {
     pub fn init(id: SubjectId, name: String, field: Field) -> Self {
-        Self{id, name, field, topics: std::collections::HashMap::with_capacity(3)}
+        Self {
+            id,
+            name,
+            field,
+            topics: std::collections::HashMap::with_capacity(3),
+        }
     }
 }
 pub type TopicId = EntryId;
@@ -68,7 +73,7 @@ impl Topic {
 pub type LearningObjCollection = HashMap<EntryId, Rc<LearningObj>>;
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Field {
-    ComputerScience
+    ComputerScience,
 }
 
 pub type LearningObjId = EntryId;
@@ -78,7 +83,6 @@ pub struct LearningObj {
     pub name: String,
     pub instructions: String,
     pub hints: Vec<String>,
-
 }
 
 impl LearningObj {
